@@ -1,13 +1,6 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        // 适配旧项目结构，不会报第 X 行错
-        classpath("com.android.tools.build:gradle:3.6.4")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.22")
-    }
+plugins {
+    id("com.android.application") version "8.11.1" apply false
+    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
 }
 
 allprojects {
@@ -17,7 +10,6 @@ allprojects {
     }
 }
 
-// 清理任务
 tasks.register("clean", Delete::class) {
-    delete(rootProject.layout.buildDirectory)
+    delete(rootProject.buildDir)
 }
