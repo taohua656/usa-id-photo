@@ -1,25 +1,16 @@
 workflows:
-  ios-debug-device:
-    name: iOS Debug (Real Device)
+  build-ios:
+    name: Build iOS Debug IPA
     instance_type: mac_mini_m2
     environment:
       flutter: 3.41.6
       xcode: latest
-      cocoapods: default
     scripts:
-      - name: Flutter pub get
-        script: |
-          flutter pub get
-      - name: Build & package iOS Debug IPA
+      - name: Build and package IPA
         script: |
           flutter build ios --debug --no-codesign
-          # 手动创建 Payload 目录并打包成 .ipa
-          mkdir -p build/ios/Payload
-          cp -r build/ios/Debug-iphoneos/Runner.app build/ios/Payload/
-          cd build/ios
-          zip -r ipa/Runner.ipa Payload/
-          # 验证产物
-          ls -la ipa/
+          mkdir Payload
+          cp -r build/ios/Debug-iphoneos/Runner.app Payload
+          zip -r Debug.ipa Payload
     artifacts:
-      - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
+      - Debug.ipa
