@@ -1,6 +1,6 @@
 workflows:
   build-ios:
-    name: Build iOS Debug IPA
+    name: Build iOS Release IPA
     instance_type: mac_mini_m2
     environment:
       flutter: 3.41.6
@@ -8,9 +8,10 @@ workflows:
     scripts:
       - name: Build and package IPA
         script: |
-          flutter build ios --debug --no-codesign
+          flutter build ios --release --no-codesign
           mkdir Payload
-          cp -r build/ios/Debug-iphoneos/Runner.app Payload
-          zip -r Debug.ipa Payload
+          cp -r build/ios/Release-iphoneos/Runner.app Payload
+          zip -r UsaIdPhoto_Release.ipa Payload
+          rm -rf Payload
     artifacts:
-      - Debug.ipa
+      - UsaIdPhoto_Release.ipa
