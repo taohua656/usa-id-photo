@@ -66,5 +66,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Take photo for official US ID Passport Visa</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Select photo for making ID photo</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save official ID photo to album</string>
 </dict>
 </plist>

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
+import 'splash_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,13 +11,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'US ID Photo Maker', // 美国市场标题
+      title: 'US ID Photo Pro',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
       ),
-      home: const HomeScreen(),
-      debugShowCheckedModeBanner: false, // 关闭调试横幅
+      debugShowCheckedModeBanner: false,
+      home: const SplashPage(),
     );
   }
 }
