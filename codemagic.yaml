@@ -5,7 +5,18 @@ workflows:
     environment:
       flutter: 3.41.6
       xcode: latest
+      cocoapods: "1.15.2"
     scripts:
+      - name: Set up dependencies
+        script: |
+          flutter pub get
+      - name: Fix CocoaPods conflict
+        script: |
+          cd ios
+          rm -rf Pods Podfile.lock
+          pod deintegrate
+          pod cache clean --all
+          pod install --repo-update
       - name: Build and package IPA
         script: |
           flutter build ios --release --no-codesign
