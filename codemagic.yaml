@@ -5,6 +5,11 @@ workflows:
       flutter: 3.41.6
       ruby: 3.2.2
     scripts:
+      - name: Prepare Flutter dependencies
+        script: |
+          set -e
+          flutter clean
+          flutter pub get  # 先执行 pub get，生成 Generated.xcconfig
       - name: Install Bundler & Dependencies
         script: |
           set -e
@@ -16,8 +21,6 @@ workflows:
       - name: Build Flutter iOS
         script: |
           set -e
-          flutter clean
-          flutter pub get
           flutter build ios --release --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
