@@ -42,10 +42,4 @@ workflows:
     artifacts:
       - ${APP_NAME}_Release_*.ipa
       - build/ios/ipa/*.ipa
-    publishing:
-      email:
-        recipients:
-          - yan.zhenqi@163.com
-        notify:
-          on_build_success: true
-          on_build_failure: true
+    
