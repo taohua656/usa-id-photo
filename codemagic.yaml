@@ -4,12 +4,7 @@ workflows:
     environment:
       flutter: 3.41.6
       ruby: 3.2.2
-      # 不写xcode，让Codemagic自动匹配
-    cache:
-      paths:
-        - ios/Pods
-        - ~/.cocoapods
-        - ~/.pub-cache
+      # 不写xcode，自动选择
     scripts:
       - name: 清理并固定CocoaPods版本
         script: |
@@ -24,4 +19,4 @@ workflows:
           flutter pub get
           flutter build ios --release --no-codesign
     artifacts:
-      - build/ios/ipa/*.ipa   
+      - build/ios/ipa/*.ipa
