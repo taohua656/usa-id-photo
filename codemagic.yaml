@@ -15,7 +15,7 @@ workflows:
         - $FLUTTER_ROOT/.pub-cache
         - $HOME/Library/Caches/CocoaPods
     scripts:
-      - name: 🔧 Pre-setup: Clean old artifacts
+      - name:  Pre-setup: Clean old artifacts
         script: |
           rm -rf build/
           rm -rf ios/Pods ios/Podfile.lock
@@ -23,14 +23,14 @@ workflows:
         script: |
           flutter pub get
           flutter pub upgrade --major-versions
-      - name: 🧩 Fix CocoaPods conflicts & install
+      - name: Fix CocoaPods conflicts & install
         script: |
           cd ios
           pod deintegrate
           pod cache clean --all
           pod repo update
           pod install --repo-update
-      - name: 🏗️ Build iOS release (no codesign)
+      - name:  Build iOS release (no codesign)
         script: |
           flutter build ios --release --no-codesign --target lib/main.dart
       - name:  Package IPA manually
