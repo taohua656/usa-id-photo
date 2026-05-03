@@ -5,17 +5,12 @@ workflows:
       flutter: 3.41.6
       ruby: 3.2.2
     scripts:
-      - name: Fix CocoaPods & Dependencies
+      - name: Install Bundler & Dependencies
         script: |
           set -e
-          # 彻底卸载所有冲突版本
-          gem uninstall cocoapods --all --force --executables || true
-          gem uninstall xcodeproj --all --force --executables || true
-          # 安装稳定兼容组合
-          gem install xcodeproj -v 1.24.0 --no-document
-          gem install cocoapods -v 1.15.2 --no-document
-          # 清理并重新安装 Pods
           cd ios
+          gem install bundler --no-document
+          bundle install --jobs 4 --retry 3
           pod deintegrate
           pod install --repo-update
       - name: Build Flutter iOS
