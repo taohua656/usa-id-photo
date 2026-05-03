@@ -1,3 +1,4 @@
+install! 'cocoapods', :generate_multiple_pod_projects => true
 platform :ios, '14.0'
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 

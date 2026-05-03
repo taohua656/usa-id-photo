@@ -1,19 +1,27 @@
+name: Flutter iOS Build
 workflows:
-  ios-build:
-    name: iOS Build
-    max_build_duration: 120
-    instance_type: mac_mini_m2
+  ios_release:
     environment:
-      flutter: 3.41.6  # 保持你本地版本
-      # 不写 xcode 版本，让 Codemagic 自动选
-      cocoapods: default
+      flutter: 3.41.6
+      ruby: 3.2.2
+      # 不写xcode，让Codemagic自动匹配
+    cache:
+      paths:
+        - ios/Pods
+        - ~/.cocoapods
+        - ~/.pub-cache
     scripts:
-      - name: Clean cache
-        script: rm -rf build/ ios/Pods ios/Podfile.lock
-      - name: Flutter pub get
-        script: flutter pub get
-      - name: Build IPA
-        script: flutter build ipa --release --no-codesign
+      - name: 清理并固定CocoaPods版本
+        script: |
+          gem uninstall cocoapods --all --force
+          gem install cocoapods -v 1.15.2 --no-document
+          cd ios
+          pod deintegrate
+          pod install --repo-update
+      - name: 编译iOS不签名
+        script: |
+          flutter clean
+          flutter pub get
+          flutter build ios --release --no-codesign
     artifacts:
-      - build/ios/ipa/*.ipa
-    
+      - build/ios/ipa/*.ipa   
