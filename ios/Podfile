@@ -1,4 +1,4 @@
-install! 'cocoapods', :generate_multiple_pod_projects => true
+install! 'cocoapods', :generate_multiple_pod_projects => false
 platform :ios, '14.0'
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 

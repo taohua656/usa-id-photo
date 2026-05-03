@@ -1,20 +1,26 @@
-name: Flutter iOS Build
 workflows:
-  ios_release:
+  ios-release:
+    name: Build iOS IPA
     environment:
       flutter: 3.41.6
       ruby: 3.2.2
-      # 不写xcode，自动选择
     scripts:
-      - name: 清理并固定CocoaPods版本
+      - name: Fix CocoaPods & Dependencies
         script: |
-          gem uninstall cocoapods --all --force
+          set -e
+          # 彻底卸载所有冲突版本
+          gem uninstall cocoapods --all --force --executables || true
+          gem uninstall xcodeproj --all --force --executables || true
+          # 安装稳定兼容组合
+          gem install xcodeproj -v 1.24.0 --no-document
           gem install cocoapods -v 1.15.2 --no-document
+          # 清理并重新安装 Pods
           cd ios
           pod deintegrate
           pod install --repo-update
-      - name: 编译iOS不签名
+      - name: Build Flutter iOS
         script: |
+          set -e
           flutter clean
           flutter pub get
           flutter build ios --release --no-codesign
