@@ -1,28 +1,51 @@
 workflows:
-  build-ios:
-    name: Build iOS Release IPA
+  ios-production-build:
+    name: iOS Production Build (ML Kit + Photo Processing)
+    max_build_duration: 90
     instance_type: mac_mini_m2
     environment:
       flutter: 3.41.6
-      xcode: latest
+      xcode: "15.3"
       cocoapods: "1.15.2"
+      vars:
+        BUNDLE_ID: "com.yourname.usaidphoto"
+        APP_NAME: "UsaIdPhoto"
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/Library/Caches/CocoaPods
     scripts:
-      - name: Set up dependencies
+      - name: 🔧 Pre-setup: Clean old artifacts
+        script: |
+          rm -rf build/
+          rm -rf ios/Pods ios/Podfile.lock
+      - name:  Install Flutter dependencies
         script: |
           flutter pub get
-      - name: Fix CocoaPods conflict
+          flutter pub upgrade --major-versions
+      - name: 🧩 Fix CocoaPods conflicts & install
         script: |
           cd ios
-          rm -rf Pods Podfile.lock
           pod deintegrate
           pod cache clean --all
+          pod repo update
           pod install --repo-update
-      - name: Build and package IPA
+      - name: 🏗️ Build iOS release (no codesign)
         script: |
-          flutter build ios --release --no-codesign
-          mkdir Payload
-          cp -r build/ios/Release-iphoneos/Runner.app Payload
-          zip -r UsaIdPhoto_Release.ipa Payload
+          flutter build ios --release --no-codesign --target lib/main.dart
+      - name:  Package IPA manually
+        script: |
+          mkdir -p Payload
+          cp -r build/ios/Release-iphoneos/Runner.app Payload/
+          zip -r ${APP_NAME}_Release_$(date +%Y%m%d%H%M).ipa Payload
           rm -rf Payload
     artifacts:
-      - UsaIdPhoto_Release.ipa
+      - ${APP_NAME}_Release_*.ipa
+      - build/ios/ipa/*.ipa
+    publishing:
+      email:
+        recipients:
+          - yan.zhenqi@163.com
+        notify:
+          on_build_success: true
+          on_build_failure: true
