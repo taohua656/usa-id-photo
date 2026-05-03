@@ -1,4 +1,7 @@
-platform :ios, '15.0'
+# Uncomment this line to define a global platform for your project
+platform :ios, '14.0'
+
+# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
@@ -14,8 +17,8 @@ def flutter_root
   end
 
   File.foreach(generated_xcode_build_settings_path) do |line|
-    match = /FLUTTER_ROOT\=(.+)/.match(line)
-    return match[1] if match
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
   end
   raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
 end
@@ -27,20 +30,12 @@ flutter_ios_podfile_setup
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 
-  # 锁定 ML Kit 依赖版本，避免解析冲突
-  pod 'google_mlkit_commons', '~> 0.6.0'
-  pod 'google_mlkit_face_detection', '~> 0.10.0'
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
-    target.build_configurations.each do |config|
-      # 强制所有 Pod 使用 iOS 15.0，彻底解决部署目标冲突
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
-      config.build_settings['ENABLE_BITCODE'] = 'NO'
-    end
   end
 end
