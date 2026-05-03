@@ -15,7 +15,7 @@ workflows:
         - $FLUTTER_ROOT/.pub-cache
         - $HOME/Library/Caches/CocoaPods
     scripts:
-      - name:  Pre-setup: Clean old artifacts
+      - name:  Pre-setup - Clean old artifacts
         script: |
           rm -rf build/
           rm -rf ios/Pods ios/Podfile.lock
