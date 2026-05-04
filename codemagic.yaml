@@ -4,10 +4,14 @@ workflows:
     environment:
       flutter: 3.41.6
     scripts:
-      - script: |
+      - name: Clean & Regenerate iOS
+        script: |
           flutter clean
           flutter pub get
           flutter create --platforms ios .
-      - script: flutter build ipa --release --no-codesign
+      - name: Build unsigned IPA
+        script: |
+          flutter build ipa --release --no-codesign \
+            --export-options-plist=/Users/builder/export_options.plist
     artifacts:
-      - build/ios/ipa/*.ipa
+      - build/ios/ipa/*.ipa      
