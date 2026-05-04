@@ -4,14 +4,32 @@ workflows:
     environment:
       flutter: 3.41.6
     scripts:
-      - name: Clean & Regenerate iOS
+      # 1. 只清理，不重建iOS工程，避免Podfile冲突
+      - name: Flutter Clean
         script: |
           flutter clean
           flutter pub get
-          flutter create --platforms ios .
+      # 2. 用预构建脚本强制关闭签名，绕过归档校验
+      - name: Pre-build disable signing
+        script: |
+          echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+          <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+          <plist version=\"1.0\">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>signingStyle</key>
+              <string>automatic</string>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <false/>
+          </dict>
+          </plist>" > /tmp/export_options.plist
+      # 3. 构建时指定无签名导出配置
       - name: Build unsigned IPA
         script: |
           flutter build ipa --release --no-codesign \
-            --export-options-plist=/Users/builder/export_options.plist
+            --export-options-plist=/tmp/export_options.plist
     artifacts:
-      - build/ios/ipa/*.ipa      
+      - build/ios/ipa/*.ipa
