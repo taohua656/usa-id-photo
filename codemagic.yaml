@@ -1,26 +1,48 @@
+# 工作流总入口
 workflows:
+  # 工作流唯一标识，固定不变
   ios-release:
+    # Codemagic页面展示名称
     name: Build iOS IPA
+    # 必须指定苹果M2机器，iOS打包专用
+    instance_type: mac_mini_m2
+    # 环境配置区
     environment:
+      # 和你本地严格一致，不改动
       flutter: 3.41.6
-      ruby: 3.2.2
+      # 查官方确认可用，写死不换
+      xcode: 16.0
+    # 缓存配置，加快后续构建速度
+    cache:
+      cache_paths:
+        # Flutter依赖缓存
+        - ~/.pub-cache
+        # iOS Pod依赖缓存
+        - ios/Pods
+        # Ruby组件缓存
+        - ios/vendor/bundle
+    # 构建脚本流程
     scripts:
-      - name: Prepare Flutter dependencies
+      # 第一步：清理+生成必备配置文件，专治无效Podfile
+      - name: Flutter Clean & Pub Get
         script: |
           set -e
           flutter clean
-          flutter pub get  # 先执行 pub get，生成 Generated.xcconfig
-      - name: Install Bundler & Dependencies
+          flutter pub get
+      # 第二步：清空旧Pod残留，重装适配依赖
+      - name: Install Bundler & Pods
         script: |
           set -e
           cd ios
+          rm -rf Pods Podfile.lock Runner.xcworkspace
           gem install bundler --no-document
-          bundle install --jobs 4 --retry 3
-          pod deintegrate
-          pod install --repo-update
-      - name: Build Flutter iOS
+          bundle install
+          bundle exec pod install --repo-update
+      # 第三步：编译无签名IPA，可直接侧载
+      - name: Build IPA
         script: |
           set -e
-          flutter build ios --release --no-codesign
+          flutter build ipa --release --no-codesign
+    # 构建完成后产出IPA下载路径
     artifacts:
       - build/ios/ipa/*.ipa
