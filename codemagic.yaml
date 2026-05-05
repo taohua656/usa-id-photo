@@ -7,10 +7,7 @@ workflows:
       flutter: 3.41.6
       xcode: 16.0
       cocoapods: 1.16.2
-    caching:
-      cache_paths:
-        - $FLUTTER_ROOT/.pub-cache
-        - $HOME/Library/Caches/CocoaPods
+    # 移除了错误的 caching 层级
     scripts:
       - name: Install dependencies
         script: |
