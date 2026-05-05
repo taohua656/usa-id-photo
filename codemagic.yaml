@@ -18,6 +18,6 @@ workflows:
           cd ..
       - name: Build iOS debug
         script: |
-          flutter build ios --no-codesign
+          flutter build ios --debug --simulator
     artifacts:
       - build/ios/Release-iphonesimulator/**/*.app
