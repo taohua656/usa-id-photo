@@ -16,8 +16,8 @@ workflows:
           cd ios
           pod install --repo-update
           cd ..
-      - name: Build iOS Simulator (No Codesign)
+      - name: Build iOS debug
         script: |
-          flutter build ios --simulator --release
+          flutter build ios  --debug
     artifacts:
       - build/ios/Release-iphonesimulator/**/*.app
